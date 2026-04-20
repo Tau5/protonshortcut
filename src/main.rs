@@ -2,23 +2,25 @@ mod linker;
 
 use steamlocate;
 use eframe::egui;
-use tokio::task::JoinHandle;
 use std::sync::mpsc;
+use std::thread::JoinHandle;
 use eframe::egui::{Layout, TextEdit};
 
-async fn create_links(log_send: mpsc::Sender<String>) {
-    let mut linker = linker::Linker::new(log_send, false);
-    linker.scan_and_process_apps();
+fn create_links(log_send: mpsc::Sender<String>) -> JoinHandle<()> {
+    std::thread::spawn(|| {
+        let mut linker = linker::Linker::new(log_send, false);
+        linker.scan_and_process_apps();
+    })
 }
 
-async fn delete_links(log_send: mpsc::Sender<String>) {
-    let mut linker = linker::Linker::new(log_send, true);
-    linker.scan_and_process_apps();
+fn delete_links(log_send: mpsc::Sender<String>) -> JoinHandle<()> {
+    std::thread::spawn(|| {
+        let mut linker = linker::Linker::new(log_send, true);
+        linker.scan_and_process_apps();
+    })
 }
 
-#[tokio::main]
-async fn main() -> eframe::Result {
-    env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
+fn main() -> eframe::Result {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),
         ..Default::default()
@@ -87,13 +89,15 @@ impl eframe::App for MyApp {
                             self.screen = AppScreen::Progress;
                             self.progress_message = "Creating links".into();
                             self.pending_action = Some(
-                                tokio::spawn(create_links(self.log_send.clone()))
+                                create_links(self.log_send.clone())
                             );
                         }
                         if ui.button("Delete links").clicked() {
                             self.screen = AppScreen::Progress;
                             self.progress_message = "Deleting links".into();
-                            self.pending_action = Some(tokio::spawn(delete_links(self.log_send.clone())));
+                            self.pending_action = Some(
+                                delete_links(self.log_send.clone())
+                            );
                         }
                     },
                     AppScreen::Progress => {

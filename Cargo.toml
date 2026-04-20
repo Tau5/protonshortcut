@@ -5,6 +5,4 @@ edition = "2024"
 
 [dependencies]
 steamlocate = "2.1.0"
-eframe = "0.34.1"
-env_logger = "0.11.10"
-tokio = { version = "1.51.1", features = ["full"] }
+eframe = { version = "0.34.1", features = ["wayland", "accesskit"] }
