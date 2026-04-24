@@ -34,6 +34,9 @@ impl Linker {
                         format!("Error creating link for {} ({})", display_name, e).into()
                     )
                 } else {
+                    self.log(
+                        format!("Created link for {}", display_name)
+                    );
                     self.successes += 1;
                 }
 
@@ -43,6 +46,9 @@ impl Linker {
                         format!("Error removing link for {} ({})", display_name, e).into()
                     )
                 } else {
+                    self.log(
+                        format!("Deleted link for {}", display_name)
+                    );
                     self.successes += 1;
                 }
             }
@@ -56,6 +62,7 @@ impl Linker {
             steam_dir.libraries().unwrap()
                 .filter_map(Result::ok)
                 .for_each(|library| {
+                    self.log(format!("Found library {}", library.path().to_str().unwrap()));
                     library
                         .apps()
                         .filter_map(Result::ok)
@@ -64,7 +71,7 @@ impl Linker {
                         );
                 })
         }
-        self.sender.send(format!("Processed {} apps succesfully", self.successes));
+        self.log(format!("Processed {} apps succesfully", self.successes));
     }
 
     pub fn new(sender: mpsc::Sender<String>, delete: bool) -> Linker {
