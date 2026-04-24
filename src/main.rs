@@ -1,10 +1,9 @@
 mod linker;
 
-use steamlocate;
 use eframe::egui;
 use std::sync::mpsc;
 use std::thread::JoinHandle;
-use eframe::egui::{Layout, TextEdit};
+use eframe::egui::{Button, Layout, TextEdit};
 
 fn create_links(log_send: mpsc::Sender<String>) -> JoinHandle<()> {
     std::thread::spawn(|| {
@@ -22,7 +21,7 @@ fn delete_links(log_send: mpsc::Sender<String>) -> JoinHandle<()> {
 
 fn main() -> eframe::Result {
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),
+        viewport: egui::ViewportBuilder::default().with_inner_size([640.0, 360.0]),
         ..Default::default()
     };
     eframe::run_native(
@@ -85,20 +84,24 @@ impl eframe::App for MyApp {
             ui.with_layout(Layout::top_down(egui::Align::TOP).with_cross_justify(true), |ui| {
                 match self.screen {
                     AppScreen::Menu => {
-                        if ui.button("Create links").clicked() {
-                            self.screen = AppScreen::Progress;
-                            self.progress_message = "Creating links".into();
-                            self.pending_action = Some(
-                                create_links(self.log_send.clone())
-                            );
-                        }
-                        if ui.button("Delete links").clicked() {
-                            self.screen = AppScreen::Progress;
-                            self.progress_message = "Deleting links".into();
-                            self.pending_action = Some(
-                                delete_links(self.log_send.clone())
-                            );
-                        }
+                        ui.with_layout(Layout::left_to_right(egui::Align::TOP), |ui2| {
+                            if ui2.add_sized([ui2.available_size().x / 2.0, 35.0], Button::new("Create links")).clicked() {
+                                self.log.clear();
+                                self.screen = AppScreen::Progress;
+                                self.progress_message = "Creating links".into();
+                                self.pending_action = Some(
+                                    create_links(self.log_send.clone())
+                                );
+                            }
+                            if ui2.add_sized([ui2.available_size().x, 35.0], Button::new("Delete links")).clicked() {
+                                self.log.clear();
+                                self.screen = AppScreen::Progress;
+                                self.progress_message = "Deleting links".into();
+                                self.pending_action = Some(
+                                    delete_links(self.log_send.clone())
+                                );
+                            }
+                        });
                     },
                     AppScreen::Progress => {
                         ui.label(&self.progress_message);

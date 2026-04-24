@@ -6,3 +6,7 @@ edition = "2024"
 [dependencies]
 steamlocate = "2.1.0"
 eframe = { version = "0.34.1", features = ["wayland", "accesskit"] }
+
+[package.metadata.packager]
+before-packaging-command = "cargo build --release"
+icons = [ "icon.png" ]
