@@ -90,37 +90,42 @@ impl Linker {
     }
 
     pub fn scan_and_process_apps(&mut self) {
-        let steamdirs = steamlocate::locate_all().expect("Could not find steamapps");
+        match steamlocate::locate_all() {
+            Ok(steamdirs) => {
+                for steam_dir in steamdirs {
+                    let libraries: Vec<Library> = steam_dir.libraries().iter_mut().flatten().filter_map(Result::ok).collect();
 
-        for steam_dir in steamdirs {
-            let libraries: Vec<Library> = steam_dir.libraries().iter_mut().flatten().filter_map(Result::ok).collect();
+                    libraries
+                        .iter().for_each(|library| {
+                        self.log(format!("Found library {}", library.path().to_str().unwrap()));
+                        library
+                            .apps()
+                            .filter_map(Result::ok)
+                            .for_each(|a|
+                                match self.process_app(&library, &a) {
+                                    Ok(s) => self.log_success(s, a.name.unwrap()),
+                                    Err(e) => self.log(format!("Error: {}", e))
+                                }
+                            );
+                    });
 
-            libraries
-                .iter().for_each(|library| {
-                    self.log(format!("Found library {}", library.path().to_str().unwrap()));
-                    library
-                        .apps()
+                    steam_dir.shortcuts()
+                        .iter_mut()
+                        .flatten()
                         .filter_map(Result::ok)
-                        .for_each(|a|
-                            match self.process_app(&library, &a) {
-                                Ok(s) => self.log_success(s, a.name.unwrap()),
+                        .for_each(|shortcut| {
+                            match self.process_shortcut(&shortcut, &libraries) {
+                                Ok(s) => self.log_success(s, shortcut.app_name),
                                 Err(e) => self.log(format!("Error: {}", e))
                             }
-                        );
-                });
-
-            steam_dir.shortcuts()
-                .iter_mut()
-                .flatten()
-                .filter_map(Result::ok)
-                .for_each(|shortcut| {
-                    match self.process_shortcut(&shortcut, &libraries) {
-                        Ok(s) => self.log_success(s, shortcut.app_name),
-                        Err(e) => self.log(format!("Error: {}", e))
-                    }
-                });
+                        });
+                }
+                self.log(format!("Processed {} apps succesfully", self.successes));
+            },
+            Err(e) => {
+                self.log(format!("Eror: Couldn't find any steam installation ({})", e))
+            }
         }
-        self.log(format!("Processed {} apps succesfully", self.successes));
     }
 
     pub fn new(sender: mpsc::Sender<String>, delete: bool) -> Linker {

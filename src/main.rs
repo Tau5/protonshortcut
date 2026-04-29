@@ -1,9 +1,9 @@
 mod linker;
 
 use eframe::egui;
+use eframe::egui::{Button, Color32, Label, Layout, RichText, TextWrapMode};
 use std::sync::mpsc;
 use std::thread::JoinHandle;
-use eframe::egui::{Button, Layout, TextEdit};
 
 fn create_links(log_send: mpsc::Sender<String>) -> JoinHandle<()> {
     std::thread::spawn(|| {
@@ -81,7 +81,7 @@ impl eframe::App for MyApp {
         }
 
         egui::CentralPanel::default().show_inside(ui, |ui| {
-            ui.with_layout(Layout::top_down(egui::Align::TOP).with_cross_justify(true), |ui| {
+            ui.with_layout(Layout::top_down(egui::Align::TOP).with_cross_justify(false), |ui| {
                 match self.screen {
                     AppScreen::Menu => {
                         ui.with_layout(Layout::left_to_right(egui::Align::TOP), |ui2| {
@@ -107,11 +107,19 @@ impl eframe::App for MyApp {
                         ui.label(&self.progress_message);
                     }
                 }
-                egui::ScrollArea::vertical().show(ui, |ui| {
-                    ui.add_sized(
-                        ui.available_size(),
-                        TextEdit::multiline(&mut self.log_rendered).cursor_at_end(true)
-                    );
+
+                ui.separator();
+                egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| {
+                    for log in &self.log {
+                    ui.add(
+                            if (log.starts_with("Error")) {
+                               Label::new(RichText::new(log).color(Color32::RED))
+                            } else {
+                                Label::new(log).wrap_mode(TextWrapMode::Wrap)
+                            }
+                        );
+                        //TextEdit::multiline(&mut self.log_rendered).cursor_at_end(true)
+                    }
                     if scroll_to_end {
                         ui.scroll_to_cursor(Some(egui::Align::BOTTOM));
                     }
