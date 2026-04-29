@@ -31,6 +31,3 @@ What this application does is make a symbolic link (kinda like a shortcut) in th
 
 You only have to run this app when you want to create new links or delete them.
 So you have to run it once to create links for all you installed apps and any time to create links for new ones
-
-## Screenshots
-
