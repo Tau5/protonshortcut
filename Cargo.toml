@@ -8,5 +8,5 @@ steamlocate = "2.1.0"
 eframe = { version = "0.34.1", features = ["wayland", "accesskit"] }
 
 [package.metadata.packager]
-before-packaging-command = "cargo build --release"
+before-packaging-command = "cargo build --release; inkscape -w 512 -h 512 icon.svg -o icon.png"
 icons = [ "icon.png" ]
