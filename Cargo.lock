@@ -2504,6 +2504,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3eb8486b569e12e2c32ad3e204dbaba5e4b5b216e9367044f25f1dba42341773"
 
 [[package]]
+name = "proton-shortcut"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "steamlocate",
+]
+
+[[package]]
 name = "pxfm"
 version = "0.1.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2955,14 +2963,6 @@ dependencies = [
  "serde",
  "serde_derive",
  "winreg",
-]
-
-[[package]]
-name = "steamprefix-linker"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "steamlocate",
 ]
 
 [[package]]
