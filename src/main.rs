@@ -45,7 +45,6 @@ struct MyApp {
     log_recv: mpsc::Receiver<String>,
     log_send: mpsc::Sender<String>,
     log: Vec<String>,
-    log_rendered: String
 }
 
 impl Default for MyApp {
@@ -59,7 +58,6 @@ impl Default for MyApp {
             log_send,
             log_recv,
             log: Vec::new(),
-            log_rendered: String::new()
         }
     }
 }
@@ -77,7 +75,6 @@ impl eframe::App for MyApp {
             println!("Recieved {}", m);
             scroll_to_end = true;
             self.log.push(m);
-            self.log_rendered = self.log.join("\n");
         }
 
         egui::CentralPanel::default().show_inside(ui, |ui| {
@@ -118,7 +115,6 @@ impl eframe::App for MyApp {
                                 Label::new(log).wrap_mode(TextWrapMode::Wrap)
                             }
                         );
-                        //TextEdit::multiline(&mut self.log_rendered).cursor_at_end(true)
                     }
                     if scroll_to_end {
                         ui.scroll_to_cursor(Some(egui::Align::BOTTOM));
