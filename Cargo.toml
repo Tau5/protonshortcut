@@ -10,3 +10,5 @@ eframe = { version = "0.34.1", features = ["wayland", "accesskit"] }
 [package.metadata.packager]
 before-packaging-command = "cargo build --release; inkscape -w 512 -h 512 icon.svg -o icon.png"
 icons = [ "icon.png" ]
+product_name = "ProtonShortcut"
+description = "Generate shortcuts to the proton data/prefix of your steam games"
