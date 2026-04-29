@@ -2,17 +2,13 @@
 
 # ProtonShortcut
 
-Generate shortcuts to access easily to proton/prefix data for your games
+Generate shortcuts to access easily proton/prefix data for your games
 
 ---
 
 ### Installation
 
 **Download and run the appimage [from the latest release here](https://github.com/Tau5/proton-shortcut/releases/latest)**
-
-![Screenshot of the GUI](.github/assets/gui-screenshot.png)
-![A screenshot of a file manager that shows side-by-side 
-the installation directory of a game with the created shortcut and it's destintation](.github/assets/result-screenshot.png)
 
 ### Description
 
@@ -28,3 +24,9 @@ What this application does is make a symbolic link (kinda like a shortcut) in th
 
 You only have to run this app when you want to create new links or delete them. 
 So you have to run it once to create links for all you installed apps and any time to create links for new ones
+
+### Screenshots
+
+![Screenshot of the GUI](.github/assets/gui-screenshot.png)
+![A screenshot of a file manager that shows side-by-side
+the installation directory of a game with the created shortcut and it's destintation](.github/assets/result-screenshot.png)
