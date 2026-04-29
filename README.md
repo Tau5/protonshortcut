@@ -1,6 +1,6 @@
 <img align="right" src="icon.svg" width="100" height="100" alt="Application icon">
 
-# ProtonShortcut
+## ProtonShortcut
 
 Generate shortcuts to access easily proton/prefix data for your games
 
